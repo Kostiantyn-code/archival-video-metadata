@@ -143,3 +143,7 @@ Python-сценарій `powershell_compatible.py` зберігає формат
 PowerShell-сценарій у першому полі записує **повний шлях до файла**, а не лише його назву. Результат записується командою `Out-File -Encoding utf8`; у Windows PowerShell 5.1 це UTF-8 із BOM, у сучасних версіях PowerShell — UTF-8 без BOM.
 
 Якщо Excel не розпізнає структуру автоматично, використайте **Data → From Text/CSV**, вибравши UTF-8 та роздільник `;`.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).
