@@ -66,8 +66,6 @@ py python\archival_video_metadata.py
 py python\powershell_compatible.py
 ```
 
-**PyCharm Community Edition не є обов'язковим.** Він використовувався під час розроблення й тестування для редагування коду, контролю виконання та перегляду повідомлень про помилки.
-
 ## PowerShell: швидкий запуск у Windows
 
 PowerShell-сценарій безпосередньо використовує **`ffprobe.exe`**, який входить до FFmpeg. Тому для цієї версії **FFmpeg потрібно встановити окремо**.
