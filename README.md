@@ -16,16 +16,6 @@ Tools for automated extraction of technical metadata from digital video files fo
 
 - `powershell/resolution3.ps1` — первинна реалізація на PowerShell.
 
-## Документація
-
-Документація навмисно продубльована у звичайних текстових файлах, щоб її можна було прочитати навіть у разі проблем із рендерингом Markdown у веб-інтерфейсі GitHub.
-
-- [PYTHON_SETUP.txt](PYTHON_SETUP.txt) — встановлення та запуск Python-сценаріїв. [Raw text](https://raw.githubusercontent.com/Kostiantyn-code/archival-video-metadata/main/PYTHON_SETUP.txt)
-- [POWERSHELL_SETUP.txt](POWERSHELL_SETUP.txt) — встановлення та запуск PowerShell-сценарію. [Raw text](https://raw.githubusercontent.com/Kostiantyn-code/archival-video-metadata/main/POWERSHELL_SETUP.txt)
-- [OUTPUT_FORMAT.txt](OUTPUT_FORMAT.txt) — формат CSV та особливості відкриття в Microsoft Excel. [Raw text](https://raw.githubusercontent.com/Kostiantyn-code/archival-video-metadata/main/OUTPUT_FORMAT.txt)
-
-Нижче наведено основну інформацію також безпосередньо в README.
-
 ## Python: швидкий запуск у Windows
 
 Для Python-версії потрібно самостійно встановити **Python** і сторонню бібліотеку **PyAV (`av`)**. Модулі `csv`, `hashlib`, `math` і `pathlib` входять до стандартної бібліотеки Python.
