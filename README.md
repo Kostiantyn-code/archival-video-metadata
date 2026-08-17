@@ -146,4 +146,4 @@ PowerShell-сценарій у першому полі записує **повн
 
 ## License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE).
+This project is licensed under the [MIT License](https://raw.githubusercontent.com/Kostiantyn-code/archival-video-metadata/main/LICENSE).
