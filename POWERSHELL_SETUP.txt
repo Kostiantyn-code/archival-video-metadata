@@ -1,0 +1,65 @@
+ЗАПУСК POWERSHELL-СЦЕНАРІЮ У WINDOWS
+
+Ця інструкція стосується сценарію:
+powershell/resolution3.ps1
+
+Сценарій рекурсивно опрацьовує відеофайли, визначає роздільність і тривалість за допомогою ffprobe, обчислює розмір файла та SHA-256 і записує результат у CSV-файл.
+
+ЩО ПОТРІБНО ВСТАНОВИТИ
+
+1. PowerShell — середовище виконання сценарію. У Windows можна використовувати Windows PowerShell або сучасний PowerShell.
+2. FFmpeg — окремий пакет мультимедійних утиліт. Сценарій безпосередньо запускає ffprobe.exe, який входить до складу FFmpeg.
+
+Python, PyAV і PyCharm для PowerShell-сценарію не потрібні.
+
+ВСТАНОВЛЕННЯ FFMPEG
+
+Поточний сценарій очікує ffprobe.exe за шляхом:
+C:\Tools\ffmpeg\bin\ffprobe.exe
+
+Можна або розмістити FFmpeg за цим шляхом, або змінити шлях у сценарії на фактичне розташування ffprobe.exe.
+
+Перевірка ffprobe:
+& "C:\Tools\ffmpeg\bin\ffprobe.exe" -version
+
+НАЛАШТУВАННЯ ШЛЯХІВ
+
+Вхідна директорія:
+$mainDirectory = "d:\temp\2026"
+
+Файл результату:
+$outputFilePath = "d:\temp\resolution.csv"
+
+Сценарій рекурсивно шукає файли:
+*.mp4, *.mov, *.avi, *.mpg
+
+ЗАПУСК
+
+Із кореня репозитарію:
+.\powershell\resolution3.ps1
+
+ЯКЩО WINDOWS БЛОКУЄ ЗАПУСК
+
+Перевірка політики виконання:
+Get-ExecutionPolicy
+
+Дозволити локальні сценарії для поточного користувача:
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+Якщо завантажений файл позначено як зовнішній:
+Unblock-File .\powershell\resolution3.ps1
+
+ЯКІ ЗАСОБИ ВИКОРИСТОВУЄ СЦЕНАРІЙ
+
+Зовнішня утиліта:
+- ffprobe зі складу FFmpeg — визначення роздільності й тривалості відео.
+
+Штатні засоби PowerShell:
+- Get-ChildItem — пошук файлів;
+- Get-Item — визначення розміру файла;
+- Get-FileHash -Algorithm SHA256 — обчислення SHA-256;
+- Out-File — запис результатів.
+
+Отже, єдина стороння програма, яку потрібно встановити окремо для PowerShell-версії, — FFmpeg (ffprobe).
+
+Формат вихідних даних докладно описано у файлі OUTPUT_FORMAT.txt.
