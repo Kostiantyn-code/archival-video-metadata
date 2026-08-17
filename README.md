@@ -42,3 +42,9 @@ Run from the repository directory:
 ```powershell
 .\powershell\resolution3.ps1
 ```
+
+## Output format
+
+Both implementations produce semicolon-separated text data intended for further use in spreadsheet software. The output uses `;` as the field separator and a decimal comma for file size, which is convenient for typical Ukrainian regional settings in Microsoft Excel.
+
+For the exact field order, encoding details, duration formatting, and differences between the Python and PowerShell implementations, see **[OUTPUT_FORMAT.md](OUTPUT_FORMAT.md)**.
