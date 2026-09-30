@@ -16,7 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
-      - run: python -m pip install --only-binary=:all: -r requirements.txt
+      - run: |
+          python -m pip install --only-binary=:all: -r requirements.txt
       - run: python -m unittest discover -s tests -v
       - name: Windows launcher first and repeat launch in a Unicode path
         if: runner.os == 'Windows'
