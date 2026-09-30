@@ -89,7 +89,7 @@ class MetadataTests(unittest.TestCase):
                 rows = list(csv.reader(file, delimiter=';'))
             self.assertEqual([r[0] for r in rows], ['А/same.mp4', 'Б/same.mp4'])
             self.assertTrue(all(len(r) == 5 for r in rows))
-            self.assertIn('bad.mp4', first.with_name('errors.txt').read_text())
+            self.assertIn('bad.mp4', first.with_name('errors.txt').read_text(encoding='utf-8'))
             self.assertEqual(self.run_metadata(), 2)
             self.assertEqual(len(list(self.output.glob('*/metadata.csv'))), 2)
             self.assertEqual(first.read_bytes(), original)

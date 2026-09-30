@@ -246,6 +246,8 @@ def build_parser():
 
 def find_video_files(input_dir, output_dir):
     """Не приховувати помилки читання директорій та не сканувати власні звіти."""
+    output_dir = output_dir.resolve()
+
     def on_error(error):
         raise error
 
