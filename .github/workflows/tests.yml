@@ -1,0 +1,37 @@
+name: Tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ['3.12', '3.13']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install --only-binary=:all: -r requirements.txt
+      - run: python -m unittest discover -s tests -v
+      - name: Windows launcher first and repeat launch in a Unicode path
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $dest = Join-Path $env:RUNNER_TEMP 'Архів відео test'
+          New-Item -ItemType Directory -Path $dest | Out-Null
+          Copy-Item run.bat,requirements.txt,python,input -Destination $dest -Recurse
+          Push-Location $dest
+          cmd /c 'run.bat <NUL'
+          if ($LASTEXITCODE -ne 0) { throw 'First launch failed' }
+          if (-not (Test-Path '.venv\Scripts\python.exe')) { throw 'Missing local environment' }
+          cmd /c 'run.bat <NUL'
+          if ($LASTEXITCODE -ne 0) { throw 'Repeat launch failed' }
+          cmd /c 'run.bat --input missing-folder <NUL'
+          if ($LASTEXITCODE -ne 1) { throw 'Launcher did not preserve the error exit code' }
+          Pop-Location
+          exit 0
