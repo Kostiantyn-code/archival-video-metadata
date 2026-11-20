@@ -7,6 +7,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
@@ -56,12 +57,13 @@ class MetadataTests(unittest.TestCase):
     def test_recursive_discovery_ignores_output_and_other_extensions(self):
         (self.source / '2026').mkdir()
         (self.source / '2026' / 'A.MP4').touch()
+        (self.source / '2026' / 'B.MKV').touch()
         (self.source / 'note.txt').touch()
         output = self.source / 'reports'
         output.mkdir()
         (output / 'exclude.mp4').touch()
         self.assertEqual(metadata.find_video_files(self.source, output),
-                         [self.source / '2026' / 'A.MP4'])
+                         [self.source / '2026' / 'A.MP4', self.source / '2026' / 'B.MKV'])
 
     def test_missing_dependency_message(self):
         (self.source / 'a.mp4').touch()
@@ -95,7 +97,6 @@ class MetadataTests(unittest.TestCase):
             self.assertEqual(first.read_bytes(), original)
 
     def test_compatibility_duration(self):
-        from types import SimpleNamespace
         stream = SimpleNamespace(duration=36619, time_base=0.1,
                                  codec_context=SimpleNamespace(width=320, height=240))
         container = contextlib.nullcontext(SimpleNamespace(streams=SimpleNamespace(video=[stream])))
@@ -103,6 +104,25 @@ class MetadataTests(unittest.TestCase):
         fake_av.open.return_value = container
         with patch.object(metadata, 'av', fake_av):
             self.assertEqual(metadata.get_video_info('test', compatible=True), ('320x240', '01:01'))
+
+    def test_duration_falls_back_to_container(self):
+        codec = SimpleNamespace(width=320, height=240)
+        for duration, time_base, expected in [(900, 0.1, '01:30'),
+                                              (None, 0.1, '01:10'),
+                                              (900, None, '01:10')]:
+            with self.subTest(duration=duration, time_base=time_base):
+                stream = SimpleNamespace(duration=duration, time_base=time_base,
+                                         codec_context=codec)
+                container = SimpleNamespace(streams=SimpleNamespace(video=[stream]),
+                                            duration=69_500_000)
+                fake_av = unittest.mock.Mock(time_base=1_000_000)
+                fake_av.open.return_value = contextlib.nullcontext(container)
+                with patch.object(metadata, 'av', fake_av):
+                    self.assertEqual(metadata.get_video_info('test'), ('320x240', expected))
+                    container.duration = None
+                    if duration is None or time_base is None:
+                        with self.assertRaisesRegex(ValueError, 'тривалість відеопотоку або контейнера'):
+                            metadata.get_video_info('test')
 
     @unittest.skipIf(metadata.av is None, 'PyAV is required for the integration test')
     def test_real_video_and_cli_from_another_directory(self):
