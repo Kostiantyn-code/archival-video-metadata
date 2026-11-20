@@ -26,6 +26,7 @@ VIDEO_EXTENSIONS = {
     ".mov",
     ".avi",
     ".mpg",
+    ".mkv",
 }
 
 
@@ -105,8 +106,8 @@ def format_duration(duration_seconds):
 
 def get_video_info(file_path, compatible=False):
     """
-    Отримує роздільну здатність і тривалість
-    першого відеопотоку.
+    Отримує роздільну здатність і тривалість першого відеопотоку.
+    Якщо тривалість потоку недоступна, використовує тривалість контейнера.
     """
 
     with av.open(str(file_path)) as container:
@@ -137,25 +138,19 @@ def get_video_info(file_path, compatible=False):
         # Тривалість
         # ----------------------------------------
 
-        if video_stream.duration is None:
+        stream_duration = video_stream.duration
+        stream_time_base = video_stream.time_base
+        if stream_duration is not None and stream_time_base is not None:
+            duration_seconds = float(stream_duration * stream_time_base)
+        elif container.duration is not None:
+            duration_seconds = container.duration / av.time_base
+        else:
             raise ValueError(
-                "Не вдалося визначити "
-                "тривалість відеопотоку"
+                "Не вдалося визначити тривалість відеопотоку або контейнера"
             )
-
-        if video_stream.time_base is None:
-            raise ValueError(
-                "Не вдалося визначити "
-                "часову базу відеопотоку"
-            )
-
-        duration_seconds = float(
-            video_stream.duration
-            * video_stream.time_base
-        )
 
         if not math.isfinite(duration_seconds) or duration_seconds < 0:
-            raise ValueError("Некоректна тривалість відеопотоку")
+            raise ValueError("Некоректна тривалість відео")
 
         if compatible:
             total_seconds = int(duration_seconds)
